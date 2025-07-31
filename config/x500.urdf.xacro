@@ -3,11 +3,10 @@
     <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
 
     <!-- Import x500 urdf file -->
-    <xacro:include filename="$(find x500_description)/urdf/x500.urdf" />
+    <xacro:include filename="$(find x500_description)/urdf/x500.urdf.xacro" ns="uav"/>
 
     <!-- Import control_xacro -->
     <xacro:include filename="x500.ros2_control.xacro" />
-
 
     <xacro:x500_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
 

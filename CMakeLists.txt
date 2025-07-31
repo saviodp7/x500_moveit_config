@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(x500_moveit2)
+project(x500_moveit_config)
 
 find_package(ament_cmake REQUIRED)
 
