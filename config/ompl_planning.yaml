@@ -1,0 +1,13 @@
+planner_configs:
+  RRTConnectkConfigDefault:
+    type: geometric::RRTConnect
+    range: 0.0
+  PRMkConfigDefault:
+    type: geometric::PRM
+    max_nearest_neighbors: 10
+    
+x500_virtual_movegroup:
+  default_planner_config: RRTConnectkConfigDefault
+  planner_configs:
+    - RRTConnectkConfigDefault
+    - PRMkConfigDefault

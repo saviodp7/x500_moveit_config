@@ -1,11 +1,1 @@
-x500_virtual_move_group:
-  kinematics_solver: cached_ik_kinematics_plugin/CachedKDLKinematicsPlugin
-  kinematics_solver_search_resolution: 0.005
-  kinematics_solver_timeout: 0.05
-  kinematics_solver_attempts: 3
-  # Parameters for caching:
-  max_cache_size: 10000
-  min_pose_distance: 1
-  min_joint_config_distance: 4
-  # Position only IK
-  position_only_ik: True
+{}

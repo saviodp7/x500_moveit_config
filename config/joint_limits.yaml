@@ -8,4 +8,47 @@ default_acceleration_scaling_factor: 0.1
 # Specific joint properties can be changed with the keys [max_position, min_position, max_velocity, max_acceleration]
 # Joint limits can be turned off with [has_velocity_limits, has_acceleration_limits]
 joint_limits:
-  {}
+    virtual_joint/trans_x:
+      has_position_limits: true
+      min_position: -20.0
+      max_position:  20.0
+      has_velocity_limits: false
+      has_acceleration_limits: false
+    virtual_joint/trans_y:
+      has_position_limits: true
+      min_position: -20.0
+      max_position:  20.0
+      has_velocity_limits: false
+      has_acceleration_limits: false
+    virtual_joint/trans_z:
+      has_position_limits: true
+      min_position: 0.0
+      max_position: 15.0
+      has_velocity_limits: false
+      has_acceleration_limits: false
+    # Se usi RPY
+    virtual_joint/rot_x:
+      has_position_limits: false
+      min_position: -3.14
+      max_position: 3.14
+      has_velocity_limits: false
+      has_acceleration_limits: false
+    virtual_joint/rot_y:
+      has_position_limits: false
+      min_position: -3.14
+      max_position: 3.14
+      has_velocity_limits: false
+      has_acceleration_limits: false
+    virtual_joint/rot_z:
+      has_position_limits: false
+      min_position: -3.14
+      max_position: 3.14
+      has_velocity_limits: false
+      has_acceleration_limits: false
+    virtual_joint/rot_w:
+      has_position_limits: false
+      min_position: -3.14
+      max_position: 3.14
+      has_velocity_limits: false
+      has_acceleration_limits: false
+    # Se invece il virtual_joint in SRDF è quaternion-based, valuta di passare a RPY per semplicità nei limiti

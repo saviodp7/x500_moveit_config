@@ -4,7 +4,7 @@
   <name>x500_moveit_config</name>
   <version>0.3.0</version>
   <description>
-     An automatically generated package with all the configuration and launch files for using the x500 with the MoveIt Motion Planning Framework
+     Package with all the configuration and launch files for using the x500 with the MoveIt Motion Planning Framework
   </description>
   <maintainer email="saviodp7@gmail.com">Salvatore Del Peschio</maintainer>
 
