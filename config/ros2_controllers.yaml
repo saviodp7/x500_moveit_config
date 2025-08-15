@@ -15,7 +15,6 @@ x500_group_controller:
     joints:
       - virtual_joint
     command_interfaces:
-      - position
+      []
     state_interfaces:
-      - position
-      - velocity
+      []
