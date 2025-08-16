@@ -1,3 +1,5 @@
+planning_plugin: "ompl_interface/OMPLPlanner"
+
 planner_configs:
   RRTConnectkConfigDefault:
     type: geometric::RRTConnect
@@ -6,7 +8,7 @@ planner_configs:
     type: geometric::PRM
     max_nearest_neighbors: 10
     
-x500_virtual_movegroup:
+x500_group:
   default_planner_config: RRTConnectkConfigDefault
   planner_configs:
     - RRTConnectkConfigDefault
