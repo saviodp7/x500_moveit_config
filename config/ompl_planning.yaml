@@ -7,9 +7,16 @@ planner_configs:
   PRMkConfigDefault:
     type: geometric::PRM
     max_nearest_neighbors: 10
-    
+  RRTstarkConfigDefault:
+    type: geometric::RRTstar
+    range: 0.0
+    goal_bias: 0.05
+    rewire_factor: 1.001
+    use_k_nearest: false
+
 x500_group:
   default_planner_config: RRTConnectkConfigDefault
   planner_configs:
     - RRTConnectkConfigDefault
     - PRMkConfigDefault
+    - RRTstarkConfigDefault
