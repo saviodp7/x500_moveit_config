@@ -1,22 +1,343 @@
 planning_plugin: "ompl_interface/OMPLPlanner"
 
+# Request adapters for preprocessing and postprocessing
+request_adapters: >-
+  default_planner_request_adapters/AddTimeOptimalParameterization
+  default_planner_request_adapters/FixWorkspaceBounds
+  default_planner_request_adapters/FixStartStateBounds
+  default_planner_request_adapters/FixStartStateCollision
+  default_planner_request_adapters/FixStartStatePathConstraints
+
+# Response adapters
+response_adapters: >-
+  default_planner_response_adapters/AddTimeOptimalParameterization
+  default_planner_response_adapters/ValidateSolution
+
+# ============================================================================
+# GEOMETRIC PLANNERS - SAMPLING-BASED
+# ============================================================================
+
 planner_configs:
-  RRTConnectkConfigDefault:
+
+  # RRT FAMILY
+  RRTConfigDefault:
+    type: geometric::RRT
+    range: 0.0              # Maximum step size (0.0 = auto-compute)
+    goal_bias: 0.05         # Probability of sampling goal (5%)
+    
+  RRTConnectConfigDefault:
     type: geometric::RRTConnect
-    range: 0.0
-  PRMkConfigDefault:
-    type: geometric::PRM
-    max_nearest_neighbors: 10
-  RRTstarkConfigDefault:
+    range: 0.0              # Maximum step size (0.0 = auto-compute)
+    
+  RRTstarConfigDefault:
     type: geometric::RRTstar
-    range: 0.0
-    goal_bias: 0.05
-    rewire_factor: 1.001
-    use_k_nearest: false
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    rewire_factor: 1.001    # Rewiring factor for optimization
+    use_k_nearest: false    # Use k-nearest vs r-disk for rewiring
+    delay_collision_checking: true  # Delay collision checking for efficiency
+
+  # LAZY RRT VARIANTS
+  LazyRRTConfigDefault:
+    type: geometric::LazyRRT
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    
+  LazyRRTstarConfigDefault:
+    type: geometric::LazyRRTstar
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    rewire_factor: 1.001    # Rewiring factor
+    use_k_nearest: false    # Use k-nearest vs r-disk
+    delay_collision_checking: true
+
+  # RAPIDLY-EXPLORING TREES - EXTENSIONS
+  RRTXstaticconfigDefault:
+    type: geometric::RRTXstatic
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    rewire_factor: 1.001    # Rewiring factor
+    use_k_nearest: false    # Use k-nearest vs r-disk
+    update_children: true   # Update children when rewiring
+
+  # EST FAMILY (Expansive Space Trees)
+  ESTConfigDefault:
+    type: geometric::EST
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    
+  # SBL (Single-query Bi-directional Lazy)
+  SBLConfigDefault:
+    type: geometric::SBL
+    range: 0.0              # Maximum step size
+    
+  # KPIECE FAMILY (Kinematic Planning by Interior-Exterior Cell Exploration)
+  KPIECEConfigDefault:
+    type: geometric::KPIECE1
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    border_fraction: 0.9    # Fraction of time to sample from border
+    
+  BKPIECE1ConfigDefault:
+    type: geometric::BKPIECE1
+    range: 0.0              # Maximum step size
+    border_fraction: 0.9    # Fraction of time to sample from border
+    
+  LBKPIECE1ConfigDefault:
+    type: geometric::LBKPIECE1
+    range: 0.0              # Maximum step size
+    border_fraction: 0.9    # Fraction of time to sample from border
+
+  # PRM FAMILY (Probabilistic Roadmap Method)
+  PRMConfigDefault:
+    type: geometric::PRM
+    max_nearest_neighbors: 10  # Maximum number of nearest neighbors
+    
+  PRMstarConfigDefault:
+    type: geometric::PRMstar
+    max_nearest_neighbors: 10  # Maximum number of nearest neighbors
+    
+  LazyPRMConfigDefault:
+    type: geometric::LazyPRM
+    range: 0.0              # Maximum step size
+    
+  LazyPRMstarConfigDefault:
+    type: geometric::LazyPRMstar
+    max_nearest_neighbors: 10  # Maximum number of nearest neighbors
+
+  # SPARS FAMILY (SPArse Roadmap Spanner)
+  SPARSConfigDefault:
+    type: geometric::SPARS
+    stretch_factor: 3.0     # Roadmap spanner stretch factor
+    sparse_delta_fraction: 0.25  # Sparse delta as fraction of extent
+    dense_delta_fraction: 0.001  # Dense delta as fraction of extent
+    max_failures: 1000      # Maximum failures before termination
+    
+  SPARStwoConfigDefault:
+    type: geometric::SPARStwo
+    stretch_factor: 3.0     # Roadmap spanner stretch factor
+    sparse_delta_fraction: 0.25  # Sparse delta as fraction of extent
+    dense_delta_fraction: 0.001  # Dense delta as fraction of extent
+    max_failures: 5000      # Maximum failures before termination
+
+  # INFORMED SAMPLING
+  InformedRRTstarConfigDefault:
+    type: geometric::InformedRRTstar
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    rewire_factor: 1.001    # Rewiring factor
+    use_k_nearest: false    # Use k-nearest vs r-disk
+    
+  BITstarConfigDefault:
+    type: geometric::BITstar
+    rewire_factor: 1.001    # Rewiring factor
+    samples_per_batch: 100  # Number of samples per batch
+    use_k_nearest: true     # Use k-nearest for connection
+    
+  ABITstarConfigDefault:
+    type: geometric::ABITstar
+    rewire_factor: 1.001    # Rewiring factor
+    samples_per_batch: 100  # Number of samples per batch
+    use_k_nearest: true     # Use k-nearest for connection
+
+  # FMT FAMILY (Fast Marching Tree)
+  FMTConfigDefault:
+    type: geometric::FMT
+    num_samples: 1000       # Number of samples to use
+    radius_multiplier: 1.1  # Radius multiplier for connections
+    nearest_k: true         # Use k-nearest vs radius
+    cache_cc: true          # Cache collision checks
+    heuristics: false       # Use heuristic sampling
+    extended_fmt: true      # Use extended FMT variant
+
+  # ANYTIME PLANNERS
+  AnytimePathShorteningConfigDefault:
+    type: geometric::AnytimePathShortening
+    planners: "RRTConnect"  # Base planner to use
+    hybridize: false        # Hybridize paths
+    max_hybrid_paths: 24    # Maximum hybrid paths
+    
+  # STRIDE (Search Tree with Resolution Independent Density Estimation)
+  STRIDEConfigDefault:
+    type: geometric::STRIDE
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    use_projected_distance: false  # Use projected distance
+    degree: 16              # Degree of the space approximation
+    max_degree: 18          # Maximum degree
+    min_degree: 12          # Minimum degree
+    max_pts_per_leaf: 6     # Maximum points per leaf
+    estimated_dimension: 0  # Estimated intrinsic dimension
+    min_valid_path_fraction: 0.2  # Minimum valid path fraction
+
+  # PDST (Path-Directed Subdivision Tree)
+  PDSTConfigDefault:
+    type: geometric::PDST
+    
+  # T-RRT (Transition-based RRT)
+  TRRTConfigDefault:
+    type: geometric::TRRT
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    max_states_failed: 10   # Maximum failed states before giving up
+    temp_change_factor: 0.1 # Temperature change factor
+    min_temperature: 10e-10 # Minimum temperature
+    init_temperature: 10e-6 # Initial temperature
+    frontier_threshold: 0.0 # Frontier threshold
+    frontier_node_ratio: 0.1 # Frontier node ratio
+    k_constant: 0.0         # K constant for T-RRT
+
+  # SST (Stable Sparse RRT)
+  SSTConfigDefault:
+    type: geometric::SST
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    selection_radius: 0.1   # Selection radius
+    pruning_radius: 0.1     # Pruning radius
+
+# ============================================================================
+# GEOMETRIC PLANNERS - OPTIMIZATION
+# ============================================================================
+
+  # CForest (Competitive Forest of Trees)
+  CForestConfigDefault:
+    type: geometric::CForest
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    num_threads: 0          # Number of threads (0 = auto)
+
+  # LBTRRT (Lower Bound Tree RRT)
+  LBTRRTConfigDefault:
+    type: geometric::LBTRRT
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    epsilon: 0.4            # Error bound for approximation
+
+# ============================================================================
+# EXPERIENCE-BASED PLANNERS
+# ============================================================================
+
+  # Lightning (Experience-based planner)
+  LightningConfigDefault:
+    type: geometric::Lightning
+    experienced_setup_file: ""  # File to load experienced setup
+
+  # Thunder (Multi-threaded Lightning)
+  ThunderConfigDefault:
+    type: geometric::Thunder
+    experienced_setup_file: ""  # File to load experienced setup
+
+# ============================================================================
+# PLANNERS FOR SPECIFIC SCENARIOS
+# ============================================================================
+
+  # XXL (eXtended eXploration Lattice)
+  XXLConfigDefault:
+    type: geometric::XXL
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+    
+  # QUOTIENT SPACE PLANNERS
+  QRRTConfigDefault:
+    type: geometric::QRRT
+    range: 0.0              # Maximum step size
+    goal_bias: 0.05         # Probability of sampling goal
+
+# ============================================================================
+# PROJECTION EVALUATORS (for high-dimensional spaces)
+# ============================================================================
+
+  # For spaces with many DOF, you might need projection evaluators
+  # These are typically configured separately in the SRDF or planning context
+
+# ============================================================================
+# PLANNING GROUP CONFIGURATIONS
+# ============================================================================
 
 x500_group:
-  default_planner_config: RRTConnectkConfigDefault
+  # Default planner - optimized for drone navigation
+  default_planner_config: RRTConnectConfigDefault
+  
+  # Projection evaluator (if needed for high DOF)
+  projection_evaluator: joints(virtual_joint/trans_x,virtual_joint/trans_y)
+  
+  # Longest valid segment length (for collision checking)
+  longest_valid_segment_length: 0.01
+  
+  # Available planners for this group
   planner_configs:
-    - RRTConnectkConfigDefault
-    - PRMkConfigDefault
-    - RRTstarkConfigDefault
+    # FAST PLANNERS (good for real-time)
+    - RRTConnectConfigDefault     # Best for most drone applications
+    - RRTConfigDefault            # Simple and fast
+    - ESTConfigDefault            # Good for complex environments
+    - KPIECEConfigDefault         # Good exploration
+    
+    # OPTIMAL PLANNERS (for high-quality paths)
+    - RRTstarConfigDefault         # Asymptotically optimal
+    - InformedRRTstarConfigDefault # Focused sampling
+    - BITstarConfigDefault         # Batch-based optimal
+    - PRMstarConfigDefault         # Roadmap-based optimal
+    
+    # ANYTIME PLANNERS (improve over time)
+    - AnytimePathShorteningConfigDefault
+    - ABITstarConfigDefault
+    
+    # SPECIALIZED PLANNERS
+    - FMTConfigDefault            # Fast Marching Tree
+    - SSTConfigDefault            # For systems with dynamics
+    - TRRTConfigDefault           # Transition-based (cost-aware)
+    
+    # ROADMAP PLANNERS (good for repeated queries)
+    - PRMConfigDefault
+    - LazyPRMConfigDefault
+    - SPARSConfigDefault
+    
+    # BIDIRECTIONAL PLANNERS
+    - BKPIECE1ConfigDefault
+    - SBLConfigDefault
+    
+    # LAZY PLANNERS (defer collision checking)
+    - LazyRRTConfigDefault
+    - LazyRRTstarConfigDefault
+    - LazyPRMConfigDefault
+
+# ============================================================================
+# GENERAL OMPL SETTINGS
+# ============================================================================
+
+# Planner-agnostic settings
+start_state_max_bounds_error: 0.1    # Maximum error in start state bounds
+jiggle_fraction: 0.02                # Amount to jiggle start state if in collision
+max_goal_samples: 1000               # Maximum goal samples
+max_goal_sampling_attempts: 1000     # Maximum goal sampling attempts
+max_planning_threads: 0              # Maximum planning threads (0 = auto)
+max_solution_segment_length: 0.0     # Maximum solution segment length
+minimum_waypoint_count: 10           # Minimum waypoint count in solution path
+
+# Simplification settings
+simplify_solutions: true             # Enable path simplification
+use_constraints_approximations: false # Use constraint approximations
+simplify_max_steps: 10               # Maximum simplification steps
+simplify_solutions_time: 5.0         # Time to spend on simplification
+
+# Display settings
+display_random_valid_states: false   # Display random valid states (debug)
+link_for_exploration_tree: ""        # Link for exploration tree display
+cost_threshold: "inf"                # Cost threshold for optimal planners
+
+# ============================================================================
+# PLANNER-SPECIFIC NOTES
+# ============================================================================
+# 
+# FOR DRONES, RECOMMENDED PLANNERS:
+# 1. RRTConnect - Fast, reliable for most cases
+# 2. RRTstar - When you need optimal paths
+# 3. InformedRRTstar - Optimal with smart sampling
+# 4. FMT - Very fast for simple environments
+# 5. KPIECE1 - Good for complex obstacle avoidance
+#
+# PARAMETER TUNING TIPS:
+# - range: Smaller values (0.01-0.1) for precise navigation
+# - goal_bias: Higher values (0.1-0.2) when goal is easily reachable
+# - rewire_factor: Close to 1.0 for better optimization
+# - max_nearest_neighbors: 5-15 for most applications
